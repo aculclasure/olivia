@@ -78,8 +78,8 @@ func init() {
 			Patterns: []string{
 				"My favorite movie genres are Comedy, Horror",
 				"I like the Comedy, Horror genres",
-                "I like movies about War",
-                "I like Action movies",
+				"I like movies about War",
+				"I like Action movies",
 			},
 			Responses: []string{
 				"Great choices! I saved this movie genre information to your client.",
@@ -247,7 +247,20 @@ func init() {
 				"Listen closely, %s",
 			},
 			Replacer: modules.AdvicesReplacer,
-},
+		},
+
+		// JENKINS
+		{
+			Tag: modules.JenkinsCredsSetterTag,
+			Patterns: []string{
+				"My Jenkins credentials are",
+				"Here are my Jenkins credentials",
+			},
+			Responses: []string{
+				"Great! I've saved your Jenkins credentials.",
+			},
+			Replacer: modules.JenkinsCredsSetterReplacer,
+		},
 	})
 
 	// COUNTRIES

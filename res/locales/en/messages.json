@@ -122,5 +122,11 @@
     "messages": [
       "Sorry I couldn't come up with an advice. Please don't hate me."
     ]
+  },
+  {
+    "tag": "no jenkins credentials",
+    "messages": [
+      "I need your Jenkins credentials (as username apikey or username:apikey)"
+    ]
   }
 ]
