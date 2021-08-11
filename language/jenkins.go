@@ -1,7 +1,9 @@
 package language
 
 import (
+	"net/url"
 	"regexp"
+	"strings"
 )
 
 var jenkinsCredsPatterns = map[string][]*regexp.Regexp{
@@ -41,4 +43,28 @@ func SearchJenkinsCredentials(locale, sentence string) []string {
 	}
 
 	return nil
+}
+
+// SearchJenkinsURL searches for the Jenkins API URL in the given sentence
+// and returns it.
+func SearchJenkinsURL(sentence string) string {
+	if !strings.Contains(strings.ToLower(sentence), "jenkins") {
+		return ""
+	}
+
+	var match string
+	fields := strings.Fields(sentence)
+	for _, fld := range fields {
+		if strings.HasPrefix(strings.ToLower(fld), "http") {
+			match = fld
+			break
+		}
+	}
+
+	u, err := url.Parse(match)
+	if err != nil || u.Scheme == "" || u.Host == "" {
+		return ""
+	}
+
+	return match
 }
