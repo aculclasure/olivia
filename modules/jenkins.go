@@ -9,6 +9,9 @@ import (
 var (
 	// JenkinsSetterTag is the intent tag for its module.
 	JenkinsCredsSetterTag = "jenkins credentials setter"
+
+	// JenkinsURLSetterTag is the intent tag for its module.
+	JenkinsURLSetterTag = "jenkins url setter"
 )
 
 // JenkinsSetterReplacer extracts a Jenkins username and password from the
@@ -27,4 +30,21 @@ func JenkinsCredsSetterReplacer(locale, entry, response, token string) (string, 
 	})
 
 	return JenkinsCredsSetterTag, response
+}
+
+// JenkinsURLSetterReplacer extracts a Jenkins API URL from the given entry and
+// stores them in the user information.
+// See modules/modules.go#Module.Replacer() for more details.
+func JenkinsURLSetterReplacer(locale, entry, response, token string) (string, string) {
+	apiURL := language.SearchJenkinsURL(entry)
+	if apiURL == "" {
+		return JenkinsURLSetterTag, util.GetMessage(locale, "no jenkins url")
+	}
+
+	user.ChangeUserInformation(token, func(info user.Information) user.Information {
+		info.JenkinsURL = apiURL
+		return info
+	})
+
+	return JenkinsURLSetterTag, response
 }

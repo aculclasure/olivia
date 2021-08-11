@@ -128,5 +128,12 @@
     "messages": [
       "I need your Jenkins credentials (as username apikey or username:apikey)"
     ]
+  },
+  {
+    "tag": "no jenkins url",
+    "messages": [
+      "Please provide a valid Jenkins API URL.",
+      "I could not determine the Jenkins API URL from your entry."
+    ]
   }
 ]

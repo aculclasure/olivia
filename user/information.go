@@ -15,6 +15,7 @@ type Information struct {
 	SpotifySecret   string        `json:"spotify_secret"`
 	JenkinsUser     string        `json:"jenkins_user"`
 	JenkinsPassword string        `json:"jenkins_password"`
+	JenkinsURL      string        `json:"jenkins_url"`
 }
 
 // A Reminder is something the user asked for Olivia to remember

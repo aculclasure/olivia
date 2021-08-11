@@ -261,6 +261,20 @@ func init() {
 			},
 			Replacer: modules.JenkinsCredsSetterReplacer,
 		},
+		{
+			Tag: modules.JenkinsURLSetterTag,
+			Patterns: []string{
+				"The Jenkins URL is",
+				"The Jenkins API URL is",
+				"The Jenkins API is at",
+				"Here is the Jenkins URL",
+				"Here is the Jenkins API",
+			},
+			Responses: []string{
+				"Great! I've saved the Jenkins API URL.",
+			},
+			Replacer: modules.JenkinsURLSetterReplacer,
+		},
 	})
 
 	// COUNTRIES
