@@ -133,7 +133,7 @@
     "tag": "no jenkins url",
     "messages": [
       "Please provide a valid Jenkins API URL.",
-      "I could not determine the Jenkins API URL from your entry."
+      "I do not know the Jenkins URL to connect to."
     ]
   },
   {
@@ -141,5 +141,8 @@
     "messages": [
       "Unable to connect to Jenkins. Please check the Jenkins URL and credentials you have provided."
     ]
+  },
+  {
+    "tag": "no jenkins job details"
   }
 ]
