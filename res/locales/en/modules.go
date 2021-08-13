@@ -275,6 +275,18 @@ func init() {
 			},
 			Replacer: modules.JenkinsURLSetterReplacer,
 		},
+		{
+			Tag: modules.JenkinsJobNamesGetterTag,
+			Patterns: []string{
+				"Tell me the Jenkins jobs",
+				"List the Jenkins jobs",
+				"What Jenkins jobs are there",
+			},
+			Responses: []string{
+				"I found the following Jenkins jobs: %s.",
+			},
+			Replacer: modules.JenkinsJobNamesGetterReplacer,
+		},
 	})
 
 	// COUNTRIES

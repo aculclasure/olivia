@@ -1,6 +1,11 @@
 package modules
 
 import (
+	"context"
+	"fmt"
+	"strings"
+
+	"github.com/bndr/gojenkins"
 	"github.com/olivia-ai/olivia/language"
 	"github.com/olivia-ai/olivia/user"
 	"github.com/olivia-ai/olivia/util"
@@ -12,6 +17,9 @@ var (
 
 	// JenkinsURLSetterTag is the intent tag for its module.
 	JenkinsURLSetterTag = "jenkins url setter"
+
+	// JenkinsJobNamesGetterTag is the intent tag for its module.
+	JenkinsJobNamesGetterTag = "jenkins job names getter"
 )
 
 // JenkinsSetterReplacer extracts a Jenkins username and password from the
@@ -47,4 +55,31 @@ func JenkinsURLSetterReplacer(locale, entry, response, token string) (string, st
 	})
 
 	return JenkinsURLSetterTag, response
+}
+
+func JenkinsJobNamesGetterReplacer(locale, entry, response, token string) (string, string) {
+	info := user.GetUserInformation(token)
+	if info.JenkinsURL == "" {
+		return JenkinsJobNamesGetterTag, util.GetMessage(locale, "no jenkins url")
+	}
+	if info.JenkinsUser == "" || info.JenkinsPassword == "" {
+		return JenkinsJobNamesGetterTag, util.GetMessage(locale, "no jenkins credentials")
+	}
+
+	ctx := context.Background()
+	jenkins := gojenkins.CreateJenkins(nil, info.JenkinsURL, info.JenkinsUser, info.JenkinsPassword)
+	if _, err := jenkins.Init(ctx); err != nil {
+		return JenkinsJobNamesGetterTag, util.GetMessage(locale, "no jenkins connection")
+	}
+
+	jobs, err := jenkins.GetAllJobNames(ctx)
+	if err != nil {
+		return JenkinsJobNamesGetterTag, util.GetMessage(locale, "no jenkins connection")
+	}
+	var names []string
+	for _, j := range jobs {
+		names = append(names, j.Name)
+	}
+
+	return JenkinsJobNamesGetterTag, fmt.Sprintf(response, strings.Join(names, ","))
 }
