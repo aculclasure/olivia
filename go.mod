@@ -3,7 +3,7 @@ module github.com/olivia-ai/olivia
 go 1.12
 
 require (
-	github.com/bndr/gojenkins v1.1.0 // indirect
+	github.com/bndr/gojenkins v1.1.0
 	github.com/fatih/color v1.9.0 // indirect
 	github.com/gookit/color v1.2.5
 	github.com/gorilla/mux v1.7.4
