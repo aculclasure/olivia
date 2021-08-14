@@ -13,13 +13,13 @@ import (
 
 var (
 	// JenkinsSetterTag is the intent tag for its module.
-	JenkinsCredsSetterTag = "jenkins credentials setter"
+	JenkinsCredsSetterTag = "jenkins credentials"
 
 	// JenkinsURLSetterTag is the intent tag for its module.
 	JenkinsURLSetterTag = "jenkins url setter"
 
 	// JenkinsJobNamesGetterTag is the intent tag for its module.
-	JenkinsJobNamesGetterTag = "jenkins job names getter"
+	JenkinsJobNamesGetterTag = "jenkins jobs getter"
 )
 
 // JenkinsSetterReplacer extracts a Jenkins username and password from the
