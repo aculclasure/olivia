@@ -8,7 +8,7 @@ import (
 
 func TestGenerateRandom(t *testing.T) {
 	rand.Seed(0)
-	random := Generate(2, 2)
+	random := GenerateRandom(2, 2)
 	excepted := Matrix{
 		{0.8903922985882329, -0.5100698294124405},
 		{0.31191253039081035, -0.8913123208005992},

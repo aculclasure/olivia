@@ -11,12 +11,15 @@ import (
 	"github.com/tebeka/snowball"
 )
 
+var (
+	punctuationRegex = regexp.MustCompile(`^.*[a-zA-Z]( )?(\.|\?|!|¿|¡)$`)
+	punctuation      = regexp.MustCompile(`(\.|\?|!)`)
+)
+
 // arrange checks the format of a string to normalize it, remove ignored characters
 func (sentence *Sentence) arrange() {
 	// Remove punctuation after letters
-	punctuationRegex := regexp.MustCompile(`[a-zA-Z]( )?(\.|\?|!|¿|¡)`)
 	sentence.Content = punctuationRegex.ReplaceAllStringFunc(sentence.Content, func(s string) string {
-		punctuation := regexp.MustCompile(`(\.|\?|!)`)
 		return punctuation.ReplaceAllString(s, "")
 	})
 

@@ -13,6 +13,9 @@ type Information struct {
 	SpotifyToken   *oauth2.Token `json:"spotify_token"`
 	SpotifyID      string        `json:"spotify_id"`
 	SpotifySecret  string        `json:"spotify_secret"`
+	JiraApiToken   string
+	JiraUserName   string
+	JiraUserID     string
 }
 
 // A Reminder is something the user asked for Olivia to remember

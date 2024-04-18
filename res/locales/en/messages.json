@@ -122,5 +122,23 @@
     "messages": [
       "Sorry I couldn't come up with an advice. Please don't hate me."
     ]
+  },
+  {
+    "tag": "jira credentials",
+    "messages": [
+      "I think you were trying to tell me your Jira API credentials but I couldn't tell what they were from the input you gave me.\nPlease give me an input like \"My Jira credentials are <user-name>:<api-token>.\""
+    ]
+  },
+  {
+    "tag": "jira client",
+    "messages": [
+      "Sorry! I was unable to create a client to communicate with Jira."
+    ]
+  },
+  {
+    "tag": "jira api request",
+    "messages": [
+      "Sorry! I had an issue communicating with the Jira API.\nPlease double check that you've given me your Jira user credentials."
+    ]
   }
 ]

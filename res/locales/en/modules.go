@@ -78,8 +78,8 @@ func init() {
 			Patterns: []string{
 				"My favorite movie genres are Comedy, Horror",
 				"I like the Comedy, Horror genres",
-                "I like movies about War",
-                "I like Action movies",
+				"I like movies about War",
+				"I like Action movies",
 			},
 			Responses: []string{
 				"Great choices! I saved this movie genre information to your client.",
@@ -247,7 +247,20 @@ func init() {
 				"Listen closely, %s",
 			},
 			Replacer: modules.AdvicesReplacer,
-},
+		},
+		{
+			Tag: modules.JiraUserCredentialsSetterTag,
+			Patterns: []string{
+				"My Jira credentials are",
+				"Here are my Jira credentials",
+				"My Jira API credentials are",
+				"Here are my credentials for the Jira API",
+			},
+			Responses: []string{
+				"",
+			},
+			Replacer: modules.JiraUserCredentialsSetterReplacer,
+		},
 	})
 
 	// COUNTRIES
