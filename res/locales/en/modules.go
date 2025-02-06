@@ -6,6 +6,21 @@ import (
 
 func init() {
 	modules.RegisterModules("en", []modules.Module{
+		{
+			Tag: modules.RollingRecycleTag,
+			Patterns: []string{
+				"I would like to start a rolling recycle",
+				"Start a rolling recycle",
+				"Begin a rolling recycle",
+				"Kick off a rolling recycle",
+				"Launch a rolling recycle",
+			},
+			Responses: []string{
+				"I've started a rolling recycle of the %s tier",
+			},
+			Run: modules.RollingRecycleRun,
+		},
+
 		// AREA
 		// For modules related to countries, please add the translations of the countries' names
 		// or open an issue to ask for translations.
@@ -78,8 +93,8 @@ func init() {
 			Patterns: []string{
 				"My favorite movie genres are Comedy, Horror",
 				"I like the Comedy, Horror genres",
-                "I like movies about War",
-                "I like Action movies",
+				"I like movies about War",
+				"I like Action movies",
 			},
 			Responses: []string{
 				"Great choices! I saved this movie genre information to your client.",
@@ -247,7 +262,7 @@ func init() {
 				"Listen closely, %s",
 			},
 			Replacer: modules.AdvicesReplacer,
-},
+		},
 	})
 
 	// COUNTRIES

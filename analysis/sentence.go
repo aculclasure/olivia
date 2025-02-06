@@ -70,6 +70,15 @@ func (sentence Sentence) PredictTag(neuralNetwork network.Network) string {
 	return resultsTag[0].Tag
 }
 
+func (s Sentence) PredictTagWithCache(cache gocache.Cache, neuralNetwork network.Network, token string) string {
+	tag, ok := cache.Get(s.Content)
+	if !ok {
+		tag = s.PredictTag(neuralNetwork)
+		cache.Set(s.Content, tag, gocache.DefaultExpiration)
+	}
+	return tag.(string)
+}
+
 // RandomizeResponse takes the entry message, the response tag and the token and returns a random
 // message from res/datasets/intents.json where the triggers are applied
 func RandomizeResponse(locale, entry, tag, token string) (string, string) {

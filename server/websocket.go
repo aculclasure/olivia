@@ -2,11 +2,14 @@ package server
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"reflect"
 
 	"github.com/olivia-ai/olivia/locales"
+	"github.com/olivia-ai/olivia/modules"
 
 	"github.com/olivia-ai/olivia/modules/start"
 
@@ -38,6 +41,31 @@ type ResponseMessage struct {
 	Content     string           `json:"content"`
 	Tag         string           `json:"tag"`
 	Information user.Information `json:"information"`
+}
+
+type webSocketSession struct {
+	conn *websocket.Conn
+}
+
+func (ws *webSocketSession) Get() ([]byte, error) {
+	msgType, msgBytes, err := ws.conn.ReadMessage()
+	if err != nil {
+		return nil, err
+	}
+	if msgType != websocket.TextMessage {
+		return nil, errors.New("websocket message type must be text message")
+	}
+	return msgBytes, nil
+}
+
+func (ws *webSocketSession) Send(msg []byte) error {
+	log.Printf("sending message %q over the wire\n", string(msg))
+	err := ws.conn.WriteMessage(websocket.TextMessage, msg)
+	if err != nil {
+		log.Printf("error in web socket session: %s\n", err)
+		return err
+	}
+	return nil
 }
 
 // SocketHandle manages the entry connections and reply with the neural network
@@ -90,11 +118,44 @@ func SocketHandle(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Write message back to browser
-		response := Reply(request)
-		if err = conn.WriteMessage(msgType, response); err != nil {
+		// response := Reply(request)
+		// if err = conn.WriteMessage(msgType, response); err != nil {
+		// 	continue
+		// }
+		if err = process(request, conn); err != nil {
+			fmt.Printf("error processing request %+v: %s", request, err)
 			continue
 		}
 	}
+}
+
+func process(req RequestMessage, conn *websocket.Conn) error {
+	if len(req.Content) > 500 {
+		resp := ResponseMessage{
+			Content:     util.GetMessage(req.Locale, "too long"),
+			Tag:         "too long",
+			Information: user.GetUserInformation(req.Token),
+		}
+		bytes, err := json.Marshal(resp)
+		if err != nil {
+			panic(err)
+		}
+		if err := conn.WriteMessage(websocket.TextMessage, bytes); err != nil {
+			return err
+		}
+		return nil
+	}
+
+	locale := req.Locale
+	if !locales.Exists(locale) {
+		locale = "en"
+	}
+	respTag := analysis.NewSentence(locale, req.Content).PredictTagWithCache(*cache, neuralNetworks[locale], req.Token)
+	err := modules.RunModule(req.Content, locale, respTag, req.Token, &webSocketSession{conn})
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // Reply takes the entry message and returns an array of bytes for the answer

@@ -1,5 +1,22 @@
 package modules
 
+import (
+	"fmt"
+
+	"github.com/olivia-ai/olivia/user"
+)
+
+type Session interface {
+	Get() ([]byte, error)
+	Send([]byte) error
+}
+
+type ResponseMessage struct {
+	Content     string           `json:"content"`
+	Tag         string           `json:"tag"`
+	Information user.Information `json:"information"`
+}
+
 // Module is a structure for dynamic intents with a Tag, some Patterns and Responses and
 // a Replacer function to execute the dynamic changes.
 type Module struct {
@@ -7,6 +24,7 @@ type Module struct {
 	Patterns  []string
 	Responses []string
 	Replacer  func(string, string, string, string) (string, string)
+	Run       func(msg, token string, session Session) error
 	Context   string
 }
 
@@ -51,4 +69,14 @@ func ReplaceContent(locale, tag, entry, response, token string) (string, string)
 	}
 
 	return tag, response
+}
+
+func RunModule(message, locale, tag, token string, session Session) error {
+	for _, module := range modules[locale] {
+		if module.Tag != tag {
+			continue
+		}
+		return module.Run(message, token, session)
+	}
+	return fmt.Errorf("no module found to handle intent %s in locale %s", tag, locale)
 }
