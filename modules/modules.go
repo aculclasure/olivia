@@ -1,6 +1,7 @@
 package modules
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/olivia-ai/olivia/user"
@@ -9,6 +10,7 @@ import (
 type Session interface {
 	Get() ([]byte, error)
 	Send([]byte) error
+	// Send(ResponseMessage) error
 }
 
 type ResponseMessage struct {
@@ -71,12 +73,42 @@ func ReplaceContent(locale, tag, entry, response, token string) (string, string)
 	return tag, response
 }
 
-func RunModule(message, locale, tag, token string, session Session) error {
-	for _, module := range modules[locale] {
-		if module.Tag != tag {
+type RunModuleConfig struct {
+	Message string
+	Locale  string
+	Tag     string
+	Token   string
+	Session Session
+}
+
+func (r RunModuleConfig) Ok() error {
+	if r.Message == "" {
+		return errors.New("message field in run module configuration must be non-empty")
+	}
+	if r.Locale == "" {
+		return errors.New("locale field in run module configuration must be non-empty")
+	}
+	if r.Tag == "" {
+		return errors.New("tag field in run module configuration must be non-empty")
+	}
+	if r.Token == "" {
+		return errors.New("token field in run module configuration must be non-empty")
+	}
+	if r.Session == nil {
+		return errors.New("session field in run module configuration must be non-nil")
+	}
+	return nil
+}
+
+func RunModule(cfg RunModuleConfig) error {
+	if err := cfg.Ok(); err != nil {
+		return err
+	}
+	for _, module := range modules[cfg.Locale] {
+		if module.Tag != cfg.Tag {
 			continue
 		}
-		return module.Run(message, token, session)
+		return module.Run(cfg.Message, cfg.Token, cfg.Session)
 	}
-	return fmt.Errorf("no module found to handle intent %s in locale %s", tag, locale)
+	return fmt.Errorf("no module found to handle intent %s in locale %s", cfg.Tag, cfg.Locale)
 }

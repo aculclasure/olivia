@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
 	"reflect"
 
@@ -59,13 +58,7 @@ func (ws *webSocketSession) Get() ([]byte, error) {
 }
 
 func (ws *webSocketSession) Send(msg []byte) error {
-	log.Printf("sending message %q over the wire\n", string(msg))
-	err := ws.conn.WriteMessage(websocket.TextMessage, msg)
-	if err != nil {
-		log.Printf("error in web socket session: %s\n", err)
-		return err
-	}
-	return nil
+	return ws.conn.WriteMessage(websocket.TextMessage, msg)
 }
 
 // SocketHandle manages the entry connections and reply with the neural network
@@ -151,7 +144,13 @@ func process(req RequestMessage, conn *websocket.Conn) error {
 		locale = "en"
 	}
 	respTag := analysis.NewSentence(locale, req.Content).PredictTagWithCache(*cache, neuralNetworks[locale], req.Token)
-	err := modules.RunModule(req.Content, locale, respTag, req.Token, &webSocketSession{conn})
+	err := modules.RunModule(modules.RunModuleConfig{
+		Message: req.Content,
+		Locale:  locale,
+		Tag:     respTag,
+		Token:   req.Token,
+		Session: &webSocketSession{conn},
+	})
 	if err != nil {
 		return err
 	}

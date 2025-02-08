@@ -11,7 +11,7 @@ var RollingRecycleTag = "rolling recycle"
 func RollingRecycleRun(msg, token string, session Session) error {
 	resp := ResponseMessage{
 		Content:     "Ok let's do a rolling recycle!",
-		Tag:         "rolling recycle",
+		Tag:         RollingRecycleTag,
 		Information: user.GetUserInformation(token),
 	}
 	bytes, err := json.Marshal(resp)
